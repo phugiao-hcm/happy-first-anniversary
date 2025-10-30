@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <!-- Cho iPhone chạy toàn màn hình -->
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+
+        <!-- Màu status bar -->
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+        <title>Happy Anniversary ❤️</title>
+
+        <!-- ThreeJS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+        <style>
+            /* splash */
+            #splash {
+                position: fixed;
+                inset: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: env(safe-area-inset-top) env(safe-area-inset-right)
+                    env(safe-area-inset-bottom) env(safe-area-inset-left);
+                background: linear-gradient(180deg, #fff0f4 0%, #ffe6ef 100%);
+                z-index: 9999;
+                transition: opacity 0.6s ease;
+            }
+            .splash-content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+                text-align: center;
+                padding: 18px 22px;
+                border-radius: 14px;
+                backdrop-filter: blur(6px);
+                background: rgba(255, 255, 255, 0.12);
+            }
+            .splash-heart {
+                width: 88px;
+                height: 88px;
+                object-fit: contain;
+                animation: pop 1.4s infinite;
+            }
+            @keyframes pop {
+                0% {
+                    transform: scale(1);
+                }
+                50% {
+                    transform: scale(1.12);
+                }
+                100% {
+                    transform: scale(1);
+                }
+            }
+
+            .splash-title {
+                margin: 0;
+                font-size: 18px;
+                color: #ff2f68;
+                text-shadow: 0 2px 10px rgba(255, 0, 80, 0.18);
+            }
+
+            .splash-content-loader {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-top: 6px;
+            }
+            .loader {
+                width: 36px;
+                height: 36px;
+                border: 4px solid rgba(255, 90, 130, 0.95);
+                border-top-color: rgba(255, 255, 255, 0.25);
+                border-radius: 50%;
+                animation: spin 0.9s linear infinite;
+                box-shadow: 0 6px 18px rgba(255, 60, 120, 0.12);
+            }
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
+            /* countdown number */
+            .countdown {
+                font-weight: 700;
+                color: #fff;
+                width: 88px;
+                height: 88px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                background: linear-gradient(180deg, #ff6b98, #ff2f68);
+                box-shadow: 0 10px 30px rgba(255, 40, 90, 0.28);
+                font-size: 38px;
+                transform: scale(1);
+                animation: none;
+            }
+            .countdown.pulse {
+                animation: popNum 0.8s ease;
+            }
+            @keyframes popNum {
+                0% {
+                    transform: scale(0.6);
+                    opacity: 0;
+                }
+                50% {
+                    transform: scale(1.18);
+                    opacity: 1;
+                }
+                100% {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+            }
+
+            /* small screens */
+            @media (max-width: 420px) {
+                .splash-heart {
+                    width: 72px;
+                    height: 72px;
+                }
+                .countdown {
+                    width: 64px;
+                    height: 64px;
+                    font-size: 28px;
+                }
+                .loader {
+                    width: 30px;
+                    height: 30px;
+                    border-width: 3px;
+                }
+            }
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: Poppins, sans-serif;
+            }
+            body {
+                background: #ffe6ef;
+                overflow: hidden;
+            }
+            html,
+            body {
+                height: 100%;
+                overscroll-behavior: none;
+                touch-action: none;
+            }
+
+            canvas {
+                position: fixed;
+                top: env(safe-area-inset-top);
+                left: 0;
+                width: 100vw;
+                height: calc(100vh - env(safe-area-inset-top));
+            }
+
+            .page {
+                width: 100vw;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                padding: 20px;
+                position: absolute;
+                top: 0;
+                left: 0;
+                opacity: 0;
+                pointer-events: none;
+                transition: 0.6s;
+            }
+            .page.active {
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            img.step-img {
+                width: 85vw;
+                max-height: 63vh;
+                object-fit: cover;
+                border-radius: 18px;
+                box-shadow: 0 6px 18px rgba(255, 60, 120, 0.35);
+                transform: scale(0.92);
+                opacity: 0;
+            }
+            .page.active img.step-img {
+                animation: fadeIn 0.8s forwards;
+            }
+            @keyframes fadeIn {
+                to {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+
+            h2 {
+                font-size: 22px;
+                color: #ff2f68;
+                margin: 10px 0;
+                text-shadow: 0 0 12px rgba(255, 0, 80, 0.4);
+            }
+            p {
+                font-size: 18px;
+                color: #555;
+                margin-bottom: 14px;
+            }
+
+            .next-btn {
+                background: #ff2f68;
+                color: #fff;
+                border: none;
+                padding: 12px 26px;
+                font-size: 18px;
+                border-radius: 40px;
+                cursor: pointer;
+                box-shadow: 0 4px 18px rgba(255, 60, 120, 0.45);
+                animation: pulse 1.6s infinite;
+            }
+            @keyframes pulse {
+                0% {
+                    transform: scale(1);
+                }
+                50% {
+                    transform: scale(1.08);
+                }
+                100% {
+                    transform: scale(1);
+                }
+            }
+
+            canvas {
+                width: 100vw;
+                height: 100vh;
+                display: block;
+            }
+
+            /* Floating hearts */
+            .heart {
+                position: fixed;
+                width: 18px;
+                height: 18px;
+                background: url("https://i.ibb.co/6n0G4Y3/heart.png") no-repeat
+                    center/contain;
+                animation: fly 4s linear infinite;
+                opacity: 0.7;
+            }
+            @keyframes fly {
+                from {
+                    transform: translateY(100vh) scale(0.8);
+                }
+                to {
+                    transform: translateY(-20vh) scale(1.4);
+                }
+            }
+
+            /* Typewriter text */
+            .type {
+                width: 100%;
+                color: white;
+                font-size: 20px;
+                margin-top: 15px;
+                text-shadow: 0 0 12px red;
+                white-space: nowrap;
+                overflow: hidden;
+                border-right: 2px solid white;
+                animation: typing 3s steps(40), blink 0.8s step-end infinite;
+            }
+            @keyframes typing {
+                from {
+                    width: 0;
+                }
+            }
+            @keyframes blink {
+                50% {
+                    border-color: transparent;
+                }
+            }
+
+            /* Music icon */
+            #musicControl {
+                position: fixed;
+                top: 12px;
+                right: 12px;
+                z-index: 10;
+                background: white;
+                padding: 10px 14px;
+                border-radius: 30px;
+                font-size: 16px;
+                cursor: pointer;
+                box-shadow: 0 3px 10px rgba(255, 60, 120, 0.4);
+            }
+
+            .fall-text {
+                position: fixed;
+                top: -20px;
+                color: #ff2f68;
+                font-weight: bold;
+                animation: fall 4s linear forwards;
+                text-shadow: 0 0 10px rgba(255, 0, 80, 0.8);
+            }
+
+            @keyframes fall {
+                0% {
+                    transform: translateY(0) rotate(0deg);
+                    opacity: 1;
+                }
+                100% {
+                    transform: translateY(100vh) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="splash" role="dialog" aria-live="polite" aria-label="Loading">
+            <div class="splash-content" id="splashInner" tabindex="0">
+                <img src="heart.png" class="splash-heart" alt="heart" />
+                <h2 class="splash-title">❤️ Our Memory Loading...</h2>
+
+                <div class="splash-content-loader" aria-hidden="true">
+                    <div class="loader" aria-hidden="true"></div>
+
+                    <!-- Countdown circle -->
+                    <div id="countdown" class="countdown">10</div>
+                </div>
+                <small style="opacity: 0.8; margin-top: 6px; color: #333"
+                    >Chạm để bỏ qua</small
+                >
+            </div>
+        </div>
+
+        <div id="musicControl">🔊</div>
+        <audio id="bgm" loop>
+            <source
+                src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_5879acdc18.mp3?filename=romantic-piano-melody-144735.mp3"
+            />
+        </audio>
+
+        <!-- Pages -->
+        <div class="page active">
+            <img
+                class="step-img"
+                src="https://images.unsplash.com/photo-1604881991720-f91c42f92e4b"
+            />
+            <h2>Ngày đầu tiên</h2>
+            <p>Khoảnh khắc… tim rung lên 💗</p>
+            <button class="next-btn">Tiếp tục</button>
+        </div>
+
+        <div class="page">
+            <img
+                class="step-img"
+                src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f"
+            />
+            <h2>Lần đầu rung động</h2>
+            <p>Lời nói, ánh mắt, nụ cười… tất cả đều khiến anh nhớ ❤️</p>
+            <button class="next-btn">Tiếp tục</button>
+        </div>
+
+        <div class="page">
+            <img
+                class="step-img"
+                src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e"
+            />
+            <h2>Những kỷ niệm</h2>
+            <p>Mỗi lần gặp em là một câu chuyện đẹp ✨</p>
+            <button class="next-btn">Tiếp tục</button>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="page">
+            <img
+                class="step-img"
+                src="https://images.unsplash.com/photo-1518199266791-5375a83190b7"
+            />
+            <h2>Những tin nhắn dài thật dài</h2>
+            <p>Mỗi dòng chữ đều là một chút thương, một chút nhớ 💌</p>
+            <button class="next-btn">Tiếp tục</button>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="page">
+            <img
+                class="step-img"
+                src="https://images.unsplash.com/photo-1550510537-84ca74f1f8f6"
+            />
+            <h2>Lần đầu nắm tay</h2>
+            <p>Khoảnh khắc ấy… tim như muốn nhảy khỏi lồng ngực 💞</p>
+            <button class="next-btn">Tiếp tục</button>
+        </div>
+
+        <!-- Step 6 -->
+        <div class="page">
+            <img
+                class="step-img"
+                src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e"
+            />
+            <h2>Những buổi hẹn hò</h2>
+            <p>Bên em, thời gian trôi nhanh đến lạ 💐</p>
+            <button class="next-btn">Tiếp tục</button>
+        </div>
+
+        <!-- Step 7 -->
+        <div class="page">
+            <img
+                class="step-img"
+                src="https://images.unsplash.com/photo-1544025162-d76694265947"
+            />
+            <h2>Những đêm nói chuyện đến quên ngủ</h2>
+            <p>Chỉ cần là em… anh chẳng muốn dừng câu chuyện ✨</p>
+            <button class="next-btn">Tiếp tục</button>
+        </div>
+
+        <!-- Step 8 -->
+        <div class="page">
+            <img
+                class="step-img"
+                src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70"
+            />
+            <h2>Những lần giận hờn</h2>
+            <p>Cãi nhau chút thôi… để yêu nhau nhiều hơn 😌</p>
+            <button class="next-btn">Tiếp tục</button>
+        </div>
+
+        <!-- Step 9 -->
+        <div class="page">
+            <img
+                class="step-img"
+                src="https://images.unsplash.com/photo-1522673607200-164d58a27c85"
+            />
+            <h2>Cùng nhau vượt qua mọi thứ</h2>
+            <p>Dù có chuyện gì xảy ra… anh vẫn chọn em 🤍</p>
+            <button class="next-btn">Tiếp tục</button>
+        </div>
+
+        <!-- Step 10 -->
+        <div class="page">
+            <img
+                class="step-img"
+                src="https://images.unsplash.com/photo-1522673607200-164d58a27c85"
+            />
+            <!-- chữ to, dễ thương -->
+            <div id="page11Text" class="page11-text">Chúc Mừng Kỷ Niệm 💖</div>
+            <button class="next-btn">Tiếp tục</button>
+        </div>
+
+        <!-- Step 11 -->
+        <div class="page">
+            <canvas id="loveSphere"></canvas>
+            <div class="type">❤️ Anh muốn đi cùng em thật lâu… thật lâu ❤️</div>
+        </div>
+
+        <script>
+            window.addEventListener("load", () => {
+                setTimeout(() => {
+                    const splash = document.getElementById("splash");
+                    splash.style.opacity = "0";
+                    setTimeout(() => (splash.style.display = "none"), 800);
+                }, 10000); // 2s intro
+            });
+
+            (function () {
+                const splash = document.getElementById("splash");
+                const countdownEl = document.getElementById("countdown");
+                const splashInner = document.getElementById("splashInner");
+
+                let start = 10; // số giây đếm ngược, đổi nếu muốn
+                let cur = start;
+
+                // hiển thị số ban đầu
+                countdownEl.textContent = cur;
+
+                // animation pulse mỗi giây
+                function pulseNumber() {
+                    countdownEl.classList.remove("pulse");
+                    // trigger reflow để replay animation
+                    void countdownEl.offsetWidth;
+                    countdownEl.classList.add("pulse");
+                }
+
+                pulseNumber();
+
+                const timer = setInterval(() => {
+                    cur -= 1;
+                    if (cur <= 0) {
+                        clearInterval(timer);
+                        // hide splash mượt
+                        splash.style.opacity = "0";
+                        setTimeout(() => {
+                            splash.style.display = "none";
+                            // optional: fire any "onSplashComplete" event here
+                        }, 600);
+                    } else {
+                        countdownEl.textContent = cur;
+                        pulseNumber();
+                    }
+                }, 1000);
+
+                // Allow tap to skip immediately
+                function skipSplash() {
+                    clearInterval(timer);
+                    splash.style.opacity = "0";
+                    setTimeout(() => (splash.style.display = "none"), 300);
+                }
+                splash.addEventListener("click", skipSplash);
+                splash.addEventListener("touchstart", skipSplash);
+
+                // keyboard accessible: press Enter to skip
+                splashInner.addEventListener(
+                    "keyup",
+                    (e) => {
+                        if (e.key === "Enter" || e.key === " ") skipSplash();
+                    },
+                    { passive: true }
+                );
+            })();
+
+            // Music
+            const bgm = document.getElementById("bgm");
+            const musicBtn = document.getElementById("musicControl");
+            let playing = false;
+            musicBtn.onclick = () => {
+                playing
+                    ? (bgm.pause(), (musicBtn.textContent = "🔇"))
+                    : (bgm.play(), (musicBtn.textContent = "🔊"));
+                playing = !playing;
+            };
+
+            // Hearts floating
+            setInterval(() => {
+                const h = document.createElement("div");
+                h.className = "heart";
+                h.style.left = Math.random() * 100 + "vw";
+                h.style.animationDuration = 3 + Math.random() * 3 + "s";
+                document.body.appendChild(h);
+                setTimeout(() => h.remove(), 4000);
+            }, 300);
+
+            // Page switching
+            const pages = document.querySelectorAll(".page");
+            const btns = document.querySelectorAll(".next-btn");
+            let idx = 0;
+            btns.forEach(
+                (b) =>
+                    (b.onclick = () => {
+                        pages[idx].classList.remove("active");
+                        idx++;
+                        pages[idx].classList.add("active");
+                        if (idx === pages.length - 1) startSphere();
+                    })
+            );
+
+            // 3D Sphere
+            // 3D Sphere - Updated with Heart PNG
+            function startSphere() {
+                const canvas = document.getElementById("loveSphere");
+                const scene = new THREE.Scene();
+                const camera = new THREE.PerspectiveCamera(
+                    75,
+                    window.innerWidth / window.innerHeight,
+                    0.1,
+                    1000
+                );
+                camera.position.z = 6;
+
+                const renderer = new THREE.WebGLRenderer({
+                    canvas,
+                    alpha: true,
+                    antialias: true,
+                });
+                renderer.setSize(window.innerWidth, window.innerHeight);
+
+                // Bokeh background
+                const bokehGeometry = new THREE.BufferGeometry();
+                const bokehCount = 200;
+                const positions = [];
+                for (let i = 0; i < bokehCount; i++) {
+                    positions.push((Math.random() - 0.5) * 50);
+                    positions.push((Math.random() - 0.5) * 50);
+                    positions.push((Math.random() - 0.5) * 50);
+                }
+                bokehGeometry.setAttribute(
+                    "position",
+                    new THREE.Float32BufferAttribute(positions, 3)
+                );
+                const bokehMaterial = new THREE.PointsMaterial({
+                    color: 0xffaacc,
+                    size: 0.3,
+                    transparent: true,
+                    opacity: 0.6,
+                });
+                const bokehPoints = new THREE.Points(
+                    bokehGeometry,
+                    bokehMaterial
+                );
+                scene.add(bokehPoints);
+
+                const loader = new THREE.TextureLoader();
+
+                // Trái tim lớn dùng PNG
+                const heartTex = loader.load("heart.png"); // PNG nền trong suốt
+                const heartMat = new THREE.MeshBasicMaterial({
+                    map: heartTex,
+                    transparent: true,
+                });
+                const heartGeo = new THREE.PlaneGeometry(3, 3);
+                const bigHeart = new THREE.Mesh(heartGeo, heartMat);
+                bigHeart.scale.set(0.1, 0.1, 0.1); // bắt đầu nhỏ
+                scene.add(bigHeart);
+
+                // 10 ảnh xoay quanh trái tim
+                const imagePaths = [
+                    "https://i.ibb.co/fYxH5dM/1.jpg",
+                    "https://i.ibb.co/0GdD0RM/2.jpg",
+                    "https://i.ibb.co/8bH7JqD/3.jpg",
+                    "https://i.ibb.co/wQhDpvP/4.jpg",
+                    "https://i.ibb.co/F5wCs8p/5.jpg",
+                    "https://i.ibb.co/vJByMTc/6.jpg",
+                    "https://i.ibb.co/x7XJktS/7.jpg",
+                    "https://i.ibb.co/mXKfcx8/8.jpg",
+                    "https://i.ibb.co/vQrWxtd/9.jpg",
+                    "https://i.ibb.co/0ZpqM8b/10.jpg",
+                ];
+
+                const imgGroup = new THREE.Group();
+                let imagesAdded = false;
+                let imgObjects = []; // ✅ dùng biến chung, không khai báo lại
+
+                function addImages() {
+                    imagePaths.forEach((img, i) => {
+                        const tex = loader.load(img);
+                        const plane = new THREE.Mesh(
+                            new THREE.PlaneGeometry(2, 2.6),
+                            new THREE.MeshBasicMaterial({
+                                map: tex,
+                                transparent: true,
+                            })
+                        );
+
+                        const angle = (i / imagePaths.length) * Math.PI * 2;
+                        const radius = 4;
+
+                        plane.position.set(
+                            Math.cos(angle) * radius,
+                            0,
+                            Math.sin(angle) * radius
+                        );
+                        plane.lookAt(0, 0, 0);
+                        imgGroup.add(plane);
+
+                        imgObjects.push({
+                            mesh: plane,
+                            angle,
+                            radius,
+                            speed: 0.013, // ✅ tốc độ xoay
+                        });
+                    });
+
+                    scene.add(imgGroup);
+                    imagesAdded = true;
+                }
+
+                // Ảnh bay quanh trái tim
+                const flyingImageList = [
+                    "https://s3.go2joy.vn/350w/promotion/8707_1760323740_68ec689cd2427.webp",
+                    "https://s3.go2joy.vn/350w/promotion/8707_1760323740_68ec689cd2427.webp",
+                    "https://s3.go2joy.vn/350w/promotion/8707_1760323740_68ec689cd2427.webp",
+                    "https://s3.go2joy.vn/350w/promotion/8707_1760323740_68ec689cd2427.webp",
+                    "https://s3.go2joy.vn/350w/promotion/8707_1760323740_68ec689cd2427.webp",
+                    "https://s3.go2joy.vn/350w/promotion/8707_1760323740_68ec689cd2427.webp",
+                    "https://s3.go2joy.vn/350w/promotion/8707_1760323740_68ec689cd2427.webp",
+                    "https://s3.go2joy.vn/350w/promotion/8707_1760323740_68ec689cd2427.webp",
+                    "https://s3.go2joy.vn/350w/promotion/8707_1760323740_68ec689cd2427.webp",
+                    "https://s3.go2joy.vn/350w/promotion/8707_1760323740_68ec689cd2427.webp",
+                    "https://s3.go2joy.vn/350w/promotion/8707_1760323740_68ec689cd2427.webp",
+                    "https://s3.go2joy.vn/350w/promotion/8707_1760323740_68ec689cd2427.webp",
+                    "https://s3.go2joy.vn/350w/promotion/8707_1760323740_68ec689cd2427.webp",
+                ];
+
+                const flyingHearts = [];
+
+                flyingImageList.forEach((img, i) => {
+                    const tex = loader.load(img);
+                    const hMat = new THREE.MeshBasicMaterial({
+                        map: tex,
+                        transparent: true,
+                        side: THREE.DoubleSide,
+                    });
+
+                    const h = new THREE.Mesh(
+                        new THREE.PlaneGeometry(0.6, 0.8), // 👈 giảm kích thước
+                        hMat
+                    );
+
+                    const angle = (i / flyingImageList.length) * Math.PI * 2;
+                    const radius = 2.2 + Math.random() * 1.2;
+
+                    h.position.set(
+                        Math.cos(angle) * radius,
+                        Math.random() * 1.5 - 0.7,
+                        Math.sin(angle) * radius
+                    );
+
+                    flyingHearts.push({
+                        mesh: h,
+                        angle,
+                        radius,
+                        speed: 0.005 + Math.random() * 0.01,
+                    });
+                    scene.add(h);
+                });
+
+                const ambient = new THREE.AmbientLight(0xffffff, 1);
+                scene.add(ambient);
+
+                let scaleUp = true;
+
+                function animate() {
+                    requestAnimationFrame(animate);
+
+                    // Big heart lớn dần
+                    if (scaleUp) {
+                        bigHeart.scale.x += 0.02;
+                        bigHeart.scale.y += 0.02;
+
+                        if (bigHeart.scale.x >= 2) {
+                            scaleUp = false;
+                            addImages(); // ✅ gọi tạo ảnh ngay lúc tim to
+                        }
+                    }
+                    // Xoay ảnh mềm mượt, liên tục
+                    if (imagesAdded) {
+                        imgObjects.forEach((obj) => {
+                            obj.angle += obj.speed;
+                            obj.mesh.position.x =
+                                Math.cos(obj.angle) * obj.radius;
+                            obj.mesh.position.z =
+                                Math.sin(obj.angle) * obj.radius;
+                            obj.mesh.lookAt(0, 0, 0);
+                        });
+                    }
+
+                    // Bokeh background quay nhẹ
+                    bokehPoints.rotation.y += 0.002;
+
+                    // Trái tim nhỏ bay vòng tròn
+                    flyingHearts.forEach((h) => {
+                        h.angle += h.speed;
+                        h.mesh.position.x = Math.cos(h.angle) * h.radius;
+                        h.mesh.position.z = Math.sin(h.angle) * h.radius;
+                        h.mesh.lookAt(0, 0, 0);
+                    });
+
+                    renderer.render(scene, camera);
+                }
+
+                animate();
+
+                // Text rơi lung linh
+                setInterval(() => {
+                    const txt = document.createElement("div");
+                    txt.className = "fall-text";
+                    txt.textContent = [
+                        "❤️",
+                        "Em",
+                        "Yêu",
+                        "Anh",
+                        "Mãi",
+                        "✨",
+                        "💕",
+                    ][Math.floor(Math.random() * 7)];
+                    txt.style.left = Math.random() * 100 + "vw";
+                    txt.style.fontSize = 18 + Math.random() * 20 + "px";
+                    document.body.appendChild(txt);
+                    setTimeout(() => txt.remove(), 4000);
+                }, 300);
+            }
+        </script>
+    </body>
+</html>
