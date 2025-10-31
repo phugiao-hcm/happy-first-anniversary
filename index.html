@@ -537,45 +537,82 @@
                 position: fixed;
                 bottom: 12px;
                 left: 12px;
-                z-index: 10;
+
+                display: none;
+                background: #ff2f68;
+                color: #fff;
+                border: none;
+                padding: 12px 26px;
+                font-size: 18px;
+                border-radius: 40px;
+                cursor: pointer;
+                box-shadow: 0 4px 18px rgba(255, 60, 120, 0.45);
+                animation: pulse 1.6s infinite;
             }
 
+            /* Nền popup */
             .modalfinal {
                 display: none; /* Mặc định ẩn */
-                position: fixed; /* Cố định trên viewport */
+                position: fixed;
                 top: 50%;
                 left: 50%;
-                transform: translate(-50%, -50%); /* Đưa chính giữa */
-                z-index: 1000; /* Đảm bảo nằm trên cùng */
-                background-color: rgba(
-                    255,
-                    20,
-                    147,
-                    0.9
-                ); /* Hồng đậm, hơi mờ */
-                padding: 20px;
-                border-radius: 10px;
+                transform: translate(-50%, -50%) scale(0.8);
+                z-index: 1000;
+                background: linear-gradient(
+                    145deg,
+                    #ffb6c1,
+                    #ff69b4
+                ); /* Hồng pastel -> hồng đậm */
+                padding: 25px 30px;
+                border-radius: 20px;
                 text-align: center;
-            }
-
-            .modalfinal-img {
-                min-width: 300px;
-                max-width: 100%;
-                height: auto;
-            }
-
-            .caption {
+                box-shadow: 0 0 30px rgba(255, 105, 180, 0.6);
+                transition: all 0.3s ease-in-out;
                 color: #fff;
-                margin-top: 10px;
+                max-width: 90%;
+                width: 380px;
+                font-family: "Comic Sans MS", cursive, sans-serif;
             }
 
+            /* Khi hiện popup */
+            .modalfinal.show {
+                display: block;
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            /* Nút đóng */
             #closeModalfinal {
                 position: absolute;
                 top: 10px;
                 right: 15px;
                 color: #fff;
-                font-size: 30px;
+                font-size: 24px;
+                font-weight: bold;
                 cursor: pointer;
+                transition: 0.2s;
+            }
+            #closeModalfinal:hover {
+                color: #ff69b4;
+            }
+
+            /* Chữ caption */
+            .caption-final {
+                margin: 10px 0;
+                font-size: 24px;
+                line-height: 1.6;
+                text-shadow: 1px 1px 2px rgba(47, 37, 37, 0.2);
+            }
+
+            /* Ảnh hoa */
+            .modalfinal-img {
+                max-width: 80%;
+                border-radius: 15px;
+                margin: 15px 0;
+                box-shadow: 0 0 15px rgba(255, 182, 193, 0.6);
+                transition: transform 0.3s;
+            }
+            .modalfinal-img:hover {
+                transform: scale(1.05);
             }
         </style>
     </head>
@@ -586,7 +623,6 @@
         <img src="images/rose.png" class="flower flower-tl" />
         <img src="images/rose.png" class="flower flower-tr" />
         <!-- END 4 góc hoa hồng -->
-
         <div>
             <div
                 id="splash"
@@ -612,7 +648,6 @@
                 </div>
             </div>
 
-            <div id="openQua">Mở quà</div>
             <div id="musicControl">🔊</div>
             <audio id="bgm" loop>
                 <source
@@ -724,9 +759,8 @@
                     src="https://images.unsplash.com/photo-1522673607200-164d58a27c85"
                 />
                 <!-- chữ to, dễ thương -->
-                <div id="page11Text" class="page11-text">
-                    Chúc Mừng Kỷ Niệm 💖
-                </div>
+                <h2>Chúc Mừng Kỷ Niệm 💖</h2>
+                <p>Dù có chuyện gì xảy ra… anh vẫn chọn em 🤍</p>
                 <button class="next-btn">Tiếp tục</button>
             </div>
 
@@ -784,7 +818,7 @@
             </div>
 
             <!-- Step 12 -->
-            <div class="page" id="page13">
+            <div class="page">
                 <div>
                     <canvas id="fireworksCanvas"></canvas>
                     <div id="celebrateText" style="bottom: 32px">
@@ -792,16 +826,17 @@
                     </div>
                     <div id="celebrateText">✨ Forever With My Love ✨</div>
                 </div>
+
+                <div id="openQua">Mở quà</div>
             </div>
 
             <!-- Popup tặng bó hoa -->
             <div id="modalfinal" class="modalfinal">
                 <span id="closeModalfinal">&times;</span>
-                <p class="caption">Bó hoa nhỏ, tình anh to 😎</p>
+                <p class="caption-final">Happy 1st Anniversary 💞</p>
                 <img class="modalfinal-img" src="images/hoa-hong-sofia.png" />
-                <p class="caption">
-                    “Hôm nay là ngày đặc biệt, nên anh muốn dành chút gì đó nhỏ
-                    xíu cho người đặc biệt nhất với anh.” 🌸
+                <p class="caption-final">
+                    “Hôm nay là ngày đặc biệt, Tặng em cái bông” 🌸
                 </p>
             </div>
         </div>
@@ -1110,6 +1145,11 @@
                         idx++;
                         pages[idx].classList.add("active");
                         if (idx === pages.length - 1) startSphere();
+
+                        if (idx == 10) {
+                            const openQua = document.getElementById("openQua");
+                            openQua.style.display = "unset";
+                        }
                     })
             );
 
