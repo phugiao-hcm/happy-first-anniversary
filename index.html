@@ -334,7 +334,7 @@
                 position: fixed;
                 bottom: 12px;
                 right: 12px;
-                z-index: 10;
+                z-index: 9999;
                 background: white;
                 padding: 10px 14px;
                 border-radius: 30px;
@@ -654,22 +654,32 @@
             </audio>
 
             <!-- Pages -->
-            <div class="page active">
+              <div class="page active">
                 <img
                     class="step-img"
-                    src="https://images.unsplash.com/photo-1604881991720-f91c42f92e4b"
+                    src="images/tin-nhan-dai-1.jpg"
                 />
-                <h2>Ngày đầu tiên</h2>
+                <h2>Tin nhắn chính thức đầu tiên</h2>
                 <p>Khoảnh khắc… tim rung lên 💗</p>
+                <button class="next-btn">Tiếp tục</button>
+            </div>
+
+            <div class="page ">
+                <img
+                    class="step-img"
+                    src="images/da-lat-1.jpg"
+                />
+                <h2>Đà Lạt đầu tiên</h2>
+                <p>Khoảnh khắc… ấm áp 💗</p>
                 <button class="next-btn">Tiếp tục</button>
             </div>
 
             <div class="page">
                 <img
                     class="step-img"
-                    src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f"
+                    src="images/chung-5.jpg"
                 />
-                <h2>Lần đầu rung động</h2>
+                <h2>Nắm tay rung động</h2>
                 <p>Lời nói, ánh mắt, nụ cười… tất cả đều khiến anh nhớ ❤️</p>
                 <button class="next-btn">Tiếp tục</button>
             </div>
@@ -677,7 +687,7 @@
             <div class="page">
                 <img
                     class="step-img"
-                    src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e"
+                    src="images/chung-1.jpg"
                 />
                 <h2>Những kỷ niệm</h2>
                 <p>Mỗi lần gặp em là một câu chuyện đẹp ✨</p>
@@ -688,7 +698,7 @@
             <div class="page">
                 <img
                     class="step-img"
-                    src="https://images.unsplash.com/photo-1518199266791-5375a83190b7"
+                    src="images/tin-nhan-dai-4.png"
                 />
                 <h2>Những tin nhắn dài thật dài</h2>
                 <p>Mỗi dòng chữ đều là một chút thương, một chút nhớ 💌</p>
@@ -699,9 +709,9 @@
             <div class="page">
                 <img
                     class="step-img"
-                    src="https://images.unsplash.com/photo-1550510537-84ca74f1f8f6"
+                    src="images/chung-2.jpg"
                 />
-                <h2>Lần đầu nắm tay</h2>
+                <h2>Coffee cùng nhau</h2>
                 <p>Khoảnh khắc ấy… tim như muốn nhảy khỏi lồng ngực 💞</p>
                 <button class="next-btn">Tiếp tục</button>
             </div>
@@ -710,7 +720,7 @@
             <div class="page">
                 <img
                     class="step-img"
-                    src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e"
+                    src="images/tra-chanh-1.jpg"
                 />
                 <h2>Những buổi hẹn hò</h2>
                 <p>Bên em, thời gian trôi nhanh đến lạ 💐</p>
@@ -721,7 +731,7 @@
             <div class="page">
                 <img
                     class="step-img"
-                    src="https://images.unsplash.com/photo-1544025162-d76694265947"
+                    src="images/tin-nhan-dai-2.jpg"
                 />
                 <h2>Những đêm nói chuyện đến quên ngủ</h2>
                 <p>Chỉ cần là em… anh chẳng muốn dừng câu chuyện ✨</p>
@@ -732,7 +742,7 @@
             <div class="page">
                 <img
                     class="step-img"
-                    src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70"
+                    src="images/tin-nhan-dai-3.png"
                 />
                 <h2>Những lần giận hờn</h2>
                 <p>Lo sợ mất nhau… xin hãy tựa vào vai nhau 😌</p>
@@ -743,7 +753,7 @@
             <div class="page">
                 <img
                     class="step-img"
-                    src="https://images.unsplash.com/photo-1522673607200-164d58a27c85"
+                    src="images/nam-tay-1.jpg"
                 />
                 <h2>Vượt qua sóng gió cuộc đời</h2>
                 <p>
@@ -757,7 +767,7 @@
             <div class="page">
                 <img
                     class="step-img"
-                    src="https://images.unsplash.com/photo-1522673607200-164d58a27c85"
+                    src="images/dalat-2.jpg"
                 />
                 <!-- chữ to, dễ thương -->
                 <h2>Chúc Mừng Kỷ Niệm 💖</h2>
@@ -770,46 +780,60 @@
                 <h2 class="gallery-title">🌟 Our Memories 🌟</h2>
 
                 <div class="gallery-grid">
-                    <div class="gallery-item" data-caption="Kỷ niệm 1 💞">
-                        <img src="img/1.jpg" />
+                    <div class="gallery-item" data-caption="King BBQ 💞">
+                        <img src="images/bbq-1.jpg" />
                     </div>
-                    <div class="gallery-item" data-caption="Kỷ niệm 2 ✨">
-                        <img src="img/2.jpg" />
+                    <div class="gallery-item" data-caption="Bãi biển Vũng Tàu ✨">
+                        <img src="images/bien-vt.jpg" />
                     </div>
-                    <div class="gallery-item" data-caption="Kỷ niệm 3 💗">
-                        <img src="img/3.jpg" />
+                    <div class="gallery-item" data-caption="Coffee 💗">
+                        <img src="images/caffe-2.jpg" />
                     </div>
-                    <div class="gallery-item" data-caption="Kỷ niệm 4 🤍">
-                        <img src="img/4.jpg" />
+                    <div class="gallery-item" data-caption="Coffee 🤍">
+                        <img src="images/caffe-3.jpg" />
                     </div>
-                    <div class="gallery-item" data-caption="Kỷ niệm 5 💕">
-                        <img src="img/5.jpg" />
+                    <div class="gallery-item" data-caption="Coffee 💕">
+                        <img src="images/caffe-4.jpg" />
                     </div>
-                    <div class="gallery-item" data-caption="Kỷ niệm 6 ✨">
-                        <img src="img/6.jpg" />
+                    <div class="gallery-item" data-caption="Coffee ✨">
+                        <img src="images/caffe-5.jpg" />
                     </div>
-                    <div class="gallery-item" data-caption="Kỷ niệm 7 💝">
-                        <img src="img/7.jpg" />
+                    <div class="gallery-item" data-caption="Sài Gòn 💝">
+                        <img src="images/home-1.jpg" />
                     </div>
-                    <div class="gallery-item" data-caption="Kỷ niệm 8 💞">
-                        <img src="img/8.jpg" />
+                    <div class="gallery-item" data-caption="Vũng Tàu 💞">
+                        <img src="images/home-vt.jpg" />
                     </div>
-                    <div class="gallery-item" data-caption="Kỷ niệm 9 💗">
-                        <img src="img/9.jpg" />
+                    <div class="gallery-item" data-caption="Jin Sik Dang 💗">
+                        <img src="images/quan-an-han-2.jpg" />
                     </div>
-                    <div class="gallery-item" data-caption="Kỷ niệm 10 🌈">
-                        <img src="img/10.jpg" />
+                    <div class="gallery-item" data-caption="Coffee 🌈">
+                        <img src="images/om-1.jpg" />
                     </div>
-                    <div class="gallery-item" data-caption="Kỷ niệm 11 💓">
-                        <img src="img/11.jpg" />
+                    <div class="gallery-item" data-caption="Studio Thủ Dầu Một 💓">
+                        <img src="images/couple-1.jpg" />
                     </div>
-                    <div class="gallery-item" data-caption="Kỷ niệm 12 💕">
-                        <img src="img/12.jpg" />
+                    <div class="gallery-item" data-caption="Sinh nhật Anh 💕">
+                        <img src="images/sinh-nhat-a.jpg" />
+                    </div>
+
+                     <div class="gallery-item" data-caption="Ẻm xinh 💗">
+                        <img src="images/hun-5.jpg" />
+                    </div>
+                    <div class="gallery-item" data-caption="Tình cảm 🌈">
+                        <img src="images/couple-3.jpg" />
+                    </div>
+                    <div class="gallery-item" data-caption="Ẻm lại ôm 💓">
+                        <img src="images/hun-1.jpg" />
+                    </div>
+                    <div class="gallery-item" data-caption="Tôi ôm ẻm 💕">
+                        <img src="images/couple-2.jpg" />
                     </div>
                 </div>
 
                 <button class="next-btn">Tiếp tục</button>
             </div>
+            
 
             <!-- Zoom Modal -->
             <div id="imageModal" class="modal">
@@ -1055,7 +1079,7 @@
                     const splash = document.getElementById("splash");
                     splash.style.opacity = "0";
                     setTimeout(() => (splash.style.display = "none"), 800);
-                }, 10000); // 2s intro
+                }, 18000); // 2s intro
             });
 
             (function () {
@@ -1063,7 +1087,7 @@
                 const countdownEl = document.getElementById("countdown");
                 const splashInner = document.getElementById("splashInner");
 
-                let start = 10; // số giây đếm ngược, đổi nếu muốn
+                let start = 18; // số giây đếm ngược, đổi nếu muốn
                 let cur = start;
 
                 // hiển thị số ban đầu
