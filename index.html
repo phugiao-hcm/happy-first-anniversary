@@ -530,6 +530,53 @@
                 will-change: transform, opacity;
             }
             /* END #page12 */
+
+            /* page 13 */
+            /* Modal */
+            #openQua {
+                position: fixed;
+                bottom: 12px;
+                left: 12px;
+                z-index: 10;
+            }
+
+            .modalfinal {
+                display: none; /* Mặc định ẩn */
+                position: fixed; /* Cố định trên viewport */
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%); /* Đưa chính giữa */
+                z-index: 1000; /* Đảm bảo nằm trên cùng */
+                background-color: rgba(
+                    255,
+                    20,
+                    147,
+                    0.9
+                ); /* Hồng đậm, hơi mờ */
+                padding: 20px;
+                border-radius: 10px;
+                text-align: center;
+            }
+
+            .modalfinal-img {
+                min-width: 300px;
+                max-width: 100%;
+                height: auto;
+            }
+
+            .caption {
+                color: #fff;
+                margin-top: 10px;
+            }
+
+            #closeModalfinal {
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                color: #fff;
+                font-size: 30px;
+                cursor: pointer;
+            }
         </style>
     </head>
 
@@ -565,6 +612,7 @@
                 </div>
             </div>
 
+            <div id="openQua">Mở quà</div>
             <div id="musicControl">🔊</div>
             <audio id="bgm" loop>
                 <source
@@ -736,7 +784,7 @@
             </div>
 
             <!-- Step 12 -->
-            <div class="page">
+            <div class="page" id="page13">
                 <div>
                     <canvas id="fireworksCanvas"></canvas>
                     <div id="celebrateText" style="bottom: 32px">
@@ -744,9 +792,17 @@
                     </div>
                     <div id="celebrateText">✨ Forever With My Love ✨</div>
                 </div>
-                <!-- <button style="margin-top: 180px" class="next-btn">
-                    Mở quà
-                </button> -->
+            </div>
+
+            <!-- Popup tặng bó hoa -->
+            <div id="modalfinal" class="modalfinal">
+                <span id="closeModalfinal">&times;</span>
+                <p class="caption">Bó hoa nhỏ, tình anh to 😎</p>
+                <img class="modalfinal-img" src="images/hoa-hong-sofia.png" />
+                <p class="caption">
+                    “Hôm nay là ngày đặc biệt, nên anh muốn dành chút gì đó nhỏ
+                    xíu cho người đặc biệt nhất với anh.” 🌸
+                </p>
             </div>
         </div>
 
@@ -1304,6 +1360,29 @@
                 });
 
             // page 13 ============
+            // Mở popup
+            // Lắng nghe khi page 12 được active
+
+            const openQua = document.getElementById("openQua");
+            openQua.addEventListener("click", () => {
+                document.getElementById("modalfinal").style.display = "unset";
+            });
+
+            // Lấy phần tử popup và nút đóng
+            const modal = document.getElementById("modalfinal");
+            const closeBtn = document.getElementById("closeModalfinal");
+
+            // Khi nhấn nút đóng
+            closeBtn.addEventListener("click", () => {
+                modal.style.display = "none";
+            });
+
+            // Nếu muốn: nhấn ra ngoài popup cũng đóng
+            window.addEventListener("click", (event) => {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            });
         </script>
     </body>
 </html>
