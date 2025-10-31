@@ -17,6 +17,45 @@
         <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
         <style>
+            .flower {
+                position: fixed;
+                width: 80px;
+                pointer-events: none;
+                opacity: 0.9;
+                animation: floatFlower 6s infinite ease-in-out alternate;
+                z-index: 9999;
+            }
+
+            /* 4 góc */
+            .flower {
+                position: fixed;
+                width: 90px;
+                pointer-events: none;
+                opacity: 0.95;
+                animation: floatFlower 4s infinite ease-in-out alternate;
+                filter: drop-shadow(0 0 8px rgba(255, 0, 80, 0.4));
+                z-index: 9999;
+            }
+
+            /* 4 góc */
+            .flower {
+                position: absolute;
+                width: 62px;
+                height: 62px;
+                transform-origin: center center;
+            }
+
+            .flower-tl {
+                top: 6px;
+                left: 6px;
+                transform: rotate(-10deg);
+            }
+            .flower-tr {
+                top: 6px;
+                right: 6px;
+                transform: rotate(10deg);
+            }
+
             /* splash */
             #splash {
                 position: fixed;
@@ -59,6 +98,13 @@
                 }
             }
 
+            .splash-title-h1 {
+                margin: 0;
+                font-size: 42px;
+                color: #ff2f68;
+                text-shadow: 0 2px 10px rgba(255, 0, 80, 0.18);
+            }
+
             .splash-title {
                 margin: 0;
                 font-size: 18px;
@@ -71,20 +117,6 @@
                 align-items: center;
                 gap: 12px;
                 margin-top: 6px;
-            }
-            .loader {
-                width: 36px;
-                height: 36px;
-                border: 4px solid rgba(255, 90, 130, 0.95);
-                border-top-color: rgba(255, 255, 255, 0.25);
-                border-radius: 50%;
-                animation: spin 0.9s linear infinite;
-                box-shadow: 0 6px 18px rgba(255, 60, 120, 0.12);
-            }
-            @keyframes spin {
-                to {
-                    transform: rotate(360deg);
-                }
             }
 
             /* countdown number */
@@ -245,23 +277,6 @@
             }
 
             /* Floating hearts */
-            /* .heart {
-                position: fixed;
-                width: 24px;
-                height: 24px;
-                background: url("https://cdn-icons-png.flaticon.com/512/5336/5336341.png")
-                    no-repeat center/contain;
-                animation: fly 4s linear infinite;
-                opacity: 0.7;
-            }
-            @keyframes fly {
-                from {
-                    transform: translateY(100vh) scale(0.8);
-                }
-                to {
-                    transform: translateY(-20vh) scale(1.4);
-                }
-            } */
             .heart {
                 position: fixed;
                 width: 32px;
@@ -317,7 +332,7 @@
             /* Music icon */
             #musicControl {
                 position: fixed;
-                top: 12px;
+                bottom: 12px;
                 right: 12px;
                 z-index: 10;
                 background: white;
@@ -405,197 +420,333 @@
                 transform: translate(-50%, -50%);
             }
 
-            #page12 {
-                position: absolute;
-                inset: 0;
-                background: linear-gradient(to bottom, #fff4f8, #ffe6ef);
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                padding: 12px;
+            /* #page12 */
+            .gallery-title {
+                text-align: center;
+                font-size: 28px;
+                margin-bottom: 14px;
             }
 
-            .grid-container {
+            .gallery-grid {
                 display: grid;
                 grid-template-columns: repeat(4, 1fr);
-                gap: 10px;
-                width: 95vw;
-                max-width: 900px;
+                gap: 8px;
+                padding: 10px;
             }
 
-            .grid-container img {
+            .gallery-item img {
                 width: 100%;
-                height: 22vw;
-                max-height: 180px;
+                height: 90px;
                 object-fit: cover;
-                border-radius: 10px;
-                opacity: 0;
-                transform: scale(0.9);
-                transition: 0.5s ease;
-                box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+                border-radius: 8px;
+                cursor: pointer;
+                transition: 0.25s;
             }
 
-            .grid-container img.show {
-                opacity: 1;
-                transform: scale(1);
+            .gallery-item img:hover {
+                transform: scale(1.05);
             }
 
-            /* mobile */
-            @media (max-width: 600px) {
-                .grid-container img {
-                    height: 24vw;
+            /* Modal */
+            .modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.85);
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+                z-index: 9999;
+            }
+
+            .modal-img {
+                width: 85%;
+                max-width: 420px;
+                border-radius: 12px;
+                animation: zoomIn 0.3s ease;
+            }
+
+            .caption {
+                color: #fff;
+                font-size: 18px;
+                margin-top: 10px;
+                animation: fadeText 0.4s;
+            }
+
+            #closeModal {
+                color: white;
+                font-size: 40px;
+                cursor: pointer;
+                position: absolute;
+                top: 15px;
+                right: 20px;
+            }
+
+            @keyframes zoomIn {
+                from {
+                    transform: scale(0.6);
+                    opacity: 0;
+                }
+                to {
+                    transform: scale(1);
+                    opacity: 1;
                 }
             }
+
+            @keyframes fadeText {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+
+            .gallery-item {
+                opacity: 0;
+                transform: translateY(-40px) scale(0.9);
+                animation: dropIn 0.7s ease-out forwards;
+            }
+
+            @keyframes dropIn {
+                0% {
+                    opacity: 0;
+                    transform: translateY(-50px) scale(0.9);
+                }
+                70% {
+                    opacity: 1;
+                    transform: translateY(5px) scale(1.03);
+                }
+                100% {
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
+                }
+            }
+
+            .gallery-item {
+                will-change: transform, opacity;
+            }
+
+            /* END #page12 */
         </style>
     </head>
 
     <body>
-        <div id="splash" role="dialog" aria-live="polite" aria-label="Loading">
-            <div class="splash-content" id="splashInner" tabindex="0">
-                <img src="heart.png" class="splash-heart" alt="heart" />
-                <h2 class="splash-title">❤️ Our Memory Loading...</h2>
+        <!-- 4 góc hoa hồng -->
+        <!-- <img src="hoa-hong-sofia.png" class="flower flower-tl" /> -->
+        <img src="images/rose.png" class="flower flower-tl" />
+        <img src="images/rose.png" class="flower flower-tr" />
+        <!-- END 4 góc hoa hồng -->
 
-                <div class="splash-content-loader" aria-hidden="true">
-                    <div class="loader" aria-hidden="true"></div>
+        <div>
+            <div
+                id="splash"
+                role="dialog"
+                aria-live="polite"
+                aria-label="Loading"
+            >
+                <div class="splash-content" id="splashInner" tabindex="0">
+                    <h1 class="splash-title-h1">❤️ 365 days</h1>
+                    <img
+                        src="images/heart.png"
+                        class="splash-heart"
+                        alt="heart"
+                    />
 
-                    <!-- Countdown circle -->
-                    <div id="countdown" class="countdown">10</div>
+                    <div class="splash-content-loader" aria-hidden="true">
+                        <!-- Countdown circle -->
+                        <div id="countdown" class="countdown">10</div>
+                    </div>
+                    <h2 class="splash-title">
+                        ❤️ Countdown to Happy 1st Anniversary...
+                    </h2>
+                    <small style="opacity: 0.8; margin-top: 6px; color: #333"
+                        >Chạm để tiếp tục</small
+                    >
                 </div>
-                <small style="opacity: 0.8; margin-top: 6px; color: #333"
-                    >Chạm để bỏ qua</small
-                >
-            </div>
-        </div>
-
-        <div id="musicControl">🔊</div>
-        <audio id="bgm" loop>
-            <source
-                src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_5879acdc18.mp3?filename=romantic-piano-melody-144735.mp3"
-            />
-        </audio>
-
-        <!-- Pages -->
-        <div class="page active">
-            <img
-                class="step-img"
-                src="https://images.unsplash.com/photo-1604881991720-f91c42f92e4b"
-            />
-            <h2>Ngày đầu tiên</h2>
-            <p>Khoảnh khắc… tim rung lên 💗</p>
-            <button class="next-btn">Tiếp tục</button>
-        </div>
-
-        <div class="page">
-            <img
-                class="step-img"
-                src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f"
-            />
-            <h2>Lần đầu rung động</h2>
-            <p>Lời nói, ánh mắt, nụ cười… tất cả đều khiến anh nhớ ❤️</p>
-            <button class="next-btn">Tiếp tục</button>
-        </div>
-
-        <div class="page">
-            <img
-                class="step-img"
-                src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e"
-            />
-            <h2>Những kỷ niệm</h2>
-            <p>Mỗi lần gặp em là một câu chuyện đẹp ✨</p>
-            <button class="next-btn">Tiếp tục</button>
-        </div>
-
-        <!-- Step 4 -->
-        <div class="page">
-            <img
-                class="step-img"
-                src="https://images.unsplash.com/photo-1518199266791-5375a83190b7"
-            />
-            <h2>Những tin nhắn dài thật dài</h2>
-            <p>Mỗi dòng chữ đều là một chút thương, một chút nhớ 💌</p>
-            <button class="next-btn">Tiếp tục</button>
-        </div>
-
-        <!-- Step 5 -->
-        <div class="page">
-            <img
-                class="step-img"
-                src="https://images.unsplash.com/photo-1550510537-84ca74f1f8f6"
-            />
-            <h2>Lần đầu nắm tay</h2>
-            <p>Khoảnh khắc ấy… tim như muốn nhảy khỏi lồng ngực 💞</p>
-            <button class="next-btn">Tiếp tục</button>
-        </div>
-
-        <!-- Step 6 -->
-        <div class="page">
-            <img
-                class="step-img"
-                src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e"
-            />
-            <h2>Những buổi hẹn hò</h2>
-            <p>Bên em, thời gian trôi nhanh đến lạ 💐</p>
-            <button class="next-btn">Tiếp tục</button>
-        </div>
-
-        <!-- Step 7 -->
-        <div class="page">
-            <img
-                class="step-img"
-                src="https://images.unsplash.com/photo-1544025162-d76694265947"
-            />
-            <h2>Những đêm nói chuyện đến quên ngủ</h2>
-            <p>Chỉ cần là em… anh chẳng muốn dừng câu chuyện ✨</p>
-            <button class="next-btn">Tiếp tục</button>
-        </div>
-
-        <!-- Step 8 -->
-        <div class="page">
-            <img
-                class="step-img"
-                src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70"
-            />
-            <h2>Những lần giận hờn</h2>
-            <p>Cãi nhau chút thôi… để yêu nhau nhiều hơn 😌</p>
-            <button class="next-btn">Tiếp tục</button>
-        </div>
-
-        <!-- Step 9 -->
-        <div class="page">
-            <img
-                class="step-img"
-                src="https://images.unsplash.com/photo-1522673607200-164d58a27c85"
-            />
-            <h2>Cùng nhau vượt qua mọi thứ</h2>
-            <p>Dù có chuyện gì xảy ra… anh vẫn chọn em 🤍</p>
-            <button class="next-btn">Tiếp tục</button>
-        </div>
-
-        <!-- Step 10 -->
-        <div class="page">
-            <img
-                class="step-img"
-                src="https://images.unsplash.com/photo-1522673607200-164d58a27c85"
-            />
-            <!-- chữ to, dễ thương -->
-            <div id="page11Text" class="page11-text">Chúc Mừng Kỷ Niệm 💖</div>
-            <button class="next-btn">Tiếp tục</button>
-        </div>
-
-        <!-- PAGE 11: Slideshow 10 ảnh hiển thị theo thứ tự -->
-        <div class="page" id="page12">
-            <div class="grid-container">
-                <!-- ảnh sẽ được JS thêm vào đây -->
             </div>
 
-            <button class="next-btn">Tiếp tục</button>
-        </div>
+            <div id="musicControl">🔊</div>
+            <audio id="bgm" loop>
+                <source
+                    src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_5879acdc18.mp3?filename=romantic-piano-melody-144735.mp3"
+                />
+            </audio>
 
-        <!-- Step 12 -->
-        <div class="page">
-            <canvas id="fireworksCanvas"></canvas>
-            <div id="celebrateText">✨ Forever With You ✨</div>
+            <!-- Pages -->
+            <div class="page active">
+                <img
+                    class="step-img"
+                    src="https://images.unsplash.com/photo-1604881991720-f91c42f92e4b"
+                />
+                <h2>Ngày đầu tiên</h2>
+                <p>Khoảnh khắc… tim rung lên 💗</p>
+                <button class="next-btn">Tiếp tục</button>
+            </div>
+
+            <div class="page">
+                <img
+                    class="step-img"
+                    src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f"
+                />
+                <h2>Lần đầu rung động</h2>
+                <p>Lời nói, ánh mắt, nụ cười… tất cả đều khiến anh nhớ ❤️</p>
+                <button class="next-btn">Tiếp tục</button>
+            </div>
+
+            <div class="page">
+                <img
+                    class="step-img"
+                    src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e"
+                />
+                <h2>Những kỷ niệm</h2>
+                <p>Mỗi lần gặp em là một câu chuyện đẹp ✨</p>
+                <button class="next-btn">Tiếp tục</button>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="page">
+                <img
+                    class="step-img"
+                    src="https://images.unsplash.com/photo-1518199266791-5375a83190b7"
+                />
+                <h2>Những tin nhắn dài thật dài</h2>
+                <p>Mỗi dòng chữ đều là một chút thương, một chút nhớ 💌</p>
+                <button class="next-btn">Tiếp tục</button>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="page">
+                <img
+                    class="step-img"
+                    src="https://images.unsplash.com/photo-1550510537-84ca74f1f8f6"
+                />
+                <h2>Lần đầu nắm tay</h2>
+                <p>Khoảnh khắc ấy… tim như muốn nhảy khỏi lồng ngực 💞</p>
+                <button class="next-btn">Tiếp tục</button>
+            </div>
+
+            <!-- Step 6 -->
+            <div class="page">
+                <img
+                    class="step-img"
+                    src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e"
+                />
+                <h2>Những buổi hẹn hò</h2>
+                <p>Bên em, thời gian trôi nhanh đến lạ 💐</p>
+                <button class="next-btn">Tiếp tục</button>
+            </div>
+
+            <!-- Step 7 -->
+            <div class="page">
+                <img
+                    class="step-img"
+                    src="https://images.unsplash.com/photo-1544025162-d76694265947"
+                />
+                <h2>Những đêm nói chuyện đến quên ngủ</h2>
+                <p>Chỉ cần là em… anh chẳng muốn dừng câu chuyện ✨</p>
+                <button class="next-btn">Tiếp tục</button>
+            </div>
+
+            <!-- Step 8 -->
+            <div class="page">
+                <img
+                    class="step-img"
+                    src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70"
+                />
+                <h2>Những lần giận hờn</h2>
+                <p>Cãi nhau chút thôi… để yêu nhau nhiều hơn 😌</p>
+                <button class="next-btn">Tiếp tục</button>
+            </div>
+
+            <!-- Step 9 -->
+            <div class="page">
+                <img
+                    class="step-img"
+                    src="https://images.unsplash.com/photo-1522673607200-164d58a27c85"
+                />
+                <h2>Cùng nhau vượt qua mọi thứ</h2>
+                <p>Dù có chuyện gì xảy ra… anh vẫn chọn em 🤍</p>
+                <button class="next-btn">Tiếp tục</button>
+            </div>
+
+            <!-- Step 10 -->
+            <div class="page">
+                <img
+                    class="step-img"
+                    src="https://images.unsplash.com/photo-1522673607200-164d58a27c85"
+                />
+                <!-- chữ to, dễ thương -->
+                <div id="page11Text" class="page11-text">
+                    Chúc Mừng Kỷ Niệm 💖
+                </div>
+                <button class="next-btn">Tiếp tục</button>
+            </div>
+
+            <!-- PAGE 11: Slideshow 10 ảnh hiển thị theo thứ tự -->
+            <div id="page12" class="page hidden">
+                <h2 class="gallery-title">🌟 Our Memories 🌟</h2>
+
+                <div class="gallery-grid">
+                    <div class="gallery-item" data-caption="Kỷ niệm 1 💞">
+                        <img src="img/1.jpg" />
+                    </div>
+                    <div class="gallery-item" data-caption="Kỷ niệm 2 ✨">
+                        <img src="img/2.jpg" />
+                    </div>
+                    <div class="gallery-item" data-caption="Kỷ niệm 3 💗">
+                        <img src="img/3.jpg" />
+                    </div>
+                    <div class="gallery-item" data-caption="Kỷ niệm 4 🤍">
+                        <img src="img/4.jpg" />
+                    </div>
+                    <div class="gallery-item" data-caption="Kỷ niệm 5 💕">
+                        <img src="img/5.jpg" />
+                    </div>
+                    <div class="gallery-item" data-caption="Kỷ niệm 6 ✨">
+                        <img src="img/6.jpg" />
+                    </div>
+                    <div class="gallery-item" data-caption="Kỷ niệm 7 💝">
+                        <img src="img/7.jpg" />
+                    </div>
+                    <div class="gallery-item" data-caption="Kỷ niệm 8 💞">
+                        <img src="img/8.jpg" />
+                    </div>
+                    <div class="gallery-item" data-caption="Kỷ niệm 9 💗">
+                        <img src="img/9.jpg" />
+                    </div>
+                    <div class="gallery-item" data-caption="Kỷ niệm 10 🌈">
+                        <img src="img/10.jpg" />
+                    </div>
+                    <div class="gallery-item" data-caption="Kỷ niệm 11 💓">
+                        <img src="img/11.jpg" />
+                    </div>
+                    <div class="gallery-item" data-caption="Kỷ niệm 12 💕">
+                        <img src="img/12.jpg" />
+                    </div>
+                </div>
+
+                <button class="next-btn">Tiếp tục</button>
+            </div>
+
+            <!-- Zoom Modal -->
+            <div id="imageModal" class="modal">
+                <span id="closeModal">&times;</span>
+                <img id="zoomImg" class="modal-img" />
+                <p id="imgCaption" class="caption"></p>
+            </div>
+
+            <!-- Step 12 -->
+            <div class="page">
+                <canvas id="fireworksCanvas"></canvas>
+                <div id="celebrateText" style="bottom: 32px">
+                    ✨ Happy 1st Anniversary! 💖🎉
+                </div>
+                <div id="celebrateText">✨ Forever With My Love ✨</div>
+            </div>
         </div>
 
         <script>
@@ -953,7 +1104,7 @@
                 const loader = new THREE.TextureLoader();
 
                 // Trái tim lớn dùng PNG
-                const heartTex = loader.load("heart.png"); // PNG nền trong suốt
+                const heartTex = loader.load("images/heart.png"); // PNG nền trong suốt
                 const heartMat = new THREE.MeshBasicMaterial({
                     map: heartTex,
                     transparent: true,
@@ -1131,56 +1282,33 @@
                 }, 300);
             }
 
-            (function () {
-                const page = document.getElementById("page12");
-                if (!page) return;
+            document.querySelectorAll(".gallery-item img").forEach((img) => {
+                img.addEventListener("click", () => {
+                    const modal = document.getElementById("imageModal");
+                    const zoomImg = document.getElementById("zoomImg");
+                    const caption = document.getElementById("imgCaption");
 
-                const images = [
-                    "https://i.ibb.co/fYxH5dM/1.jpg",
-                    "https://i.ibb.co/0GdD0RM/2.jpg",
-                    "https://i.ibb.co/8bH7JqD/3.jpg",
-                    "https://i.ibb.co/wQhDpvP/4.jpg",
-                    "https://i.ibb.co/F5wCs8p/5.jpg",
-                    "https://i.ibb.co/vJByMTc/6.jpg",
-                    "https://i.ibb.co/x7XJktS/7.jpg",
-                    "https://i.ibb.co/mXKfcx8/8.jpg",
-                    "https://i.ibb.co/vQrWxtd/9.jpg",
-                    "https://i.ibb.co/0ZpqM8b/10.jpg",
-                    "https://i.ibb.co/fYxH5dM/1.jpg",
-                    "https://i.ibb.co/0GdD0RM/2.jpg",
-                ];
+                    zoomImg.src = img.src;
+                    caption.textContent = img.parentElement.dataset.caption;
 
-                const container = page.querySelector(".grid-container");
+                    modal.style.display = "flex";
+                });
+            });
 
-                // Tạo image elements
-                images.forEach((src) => {
-                    const img = document.createElement("img");
-                    img.src = src;
-                    container.appendChild(img);
+            document
+                .getElementById("closeModal")
+                .addEventListener("click", () => {
+                    document.getElementById("imageModal").style.display =
+                        "none";
                 });
 
-                let animated = false;
-
-                const showImages = () => {
-                    if (animated) return;
-                    animated = true;
-                    const imgs = container.querySelectorAll("img");
-                    imgs.forEach((img, i) => {
-                        setTimeout(() => img.classList.add("show"), i * 120);
-                    });
-                };
-
-                const observer = new MutationObserver(() => {
-                    if (page.classList.contains("active")) showImages();
+            document
+                .getElementById("imageModal")
+                .addEventListener("click", (e) => {
+                    if (e.target.id === "imageModal") {
+                        e.target.style.display = "none";
+                    }
                 });
-
-                observer.observe(page, {
-                    attributes: true,
-                    attributeFilter: ["class"],
-                });
-
-                if (page.classList.contains("active")) showImages();
-            })();
         </script>
     </body>
 </html>
