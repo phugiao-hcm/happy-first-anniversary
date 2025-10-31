@@ -529,7 +529,6 @@
             .gallery-item {
                 will-change: transform, opacity;
             }
-
             /* END #page12 */
         </style>
     </head>
@@ -563,9 +562,6 @@
                     <h2 class="splash-title">
                         ❤️ Countdown to Happy 1st Anniversary...
                     </h2>
-                    <small style="opacity: 0.8; margin-top: 6px; color: #333"
-                        >Chạm để tiếp tục</small
-                    >
                 </div>
             </div>
 
@@ -741,11 +737,16 @@
 
             <!-- Step 12 -->
             <div class="page">
-                <canvas id="fireworksCanvas"></canvas>
-                <div id="celebrateText" style="bottom: 32px">
-                    ✨ Happy 1st Anniversary! 💖🎉
+                <div>
+                    <canvas id="fireworksCanvas"></canvas>
+                    <div id="celebrateText" style="bottom: 32px">
+                        ✨ Happy 1st Anniversary! 💖🎉
+                    </div>
+                    <div id="celebrateText">✨ Forever With My Love ✨</div>
                 </div>
-                <div id="celebrateText">✨ Forever With My Love ✨</div>
+                <!-- <button style="margin-top: 180px" class="next-btn">
+                    Mở quà
+                </button> -->
             </div>
         </div>
 
@@ -1118,14 +1119,6 @@
                 const imagePaths = [
                     "https://img.favpng.com/17/7/7/heart-icon-love-icon-png-favpng-fdEYx0u0j6vLbKTw6ptuPxCD2.jpg",
                     "https://img.favpng.com/17/7/7/heart-icon-love-icon-png-favpng-fdEYx0u0j6vLbKTw6ptuPxCD2.jpg",
-                    "https://img.favpng.com/17/7/7/heart-icon-love-icon-png-favpng-fdEYx0u0j6vLbKTw6ptuPxCD2.jpg",
-                    "https://i.ibb.co/wQhDpvP/4.jpg",
-                    "https://i.ibb.co/F5wCs8p/5.jpg",
-                    "https://i.ibb.co/vJByMTc/6.jpg",
-                    "https://i.ibb.co/x7XJktS/7.jpg",
-                    "https://i.ibb.co/mXKfcx8/8.jpg",
-                    "https://i.ibb.co/vQrWxtd/9.jpg",
-                    "https://i.ibb.co/0ZpqM8b/10.jpg",
                 ];
 
                 const imgGroup = new THREE.Group();
@@ -1309,6 +1302,8 @@
                         e.target.style.display = "none";
                     }
                 });
+
+            // page 13 ============
         </script>
     </body>
 </html>

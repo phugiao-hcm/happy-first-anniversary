@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+        <title>Anniversary Galaxy Love</title>
+
+        <style>
+            body {
+                margin: 0;
+                overflow: hidden;
+                background: #000;
+                touch-action: none;
+                font-family: "Poppins", sans-serif;
+            }
+
+            #scene {
+                position: relative;
+                width: 100vw;
+                height: 100vh;
+                transform-style: preserve-3d;
+                transition: transform 0.1s linear;
+            }
+
+            /* Galaxy Background */
+            body::before {
+                content: "";
+                position: fixed;
+                inset: 0;
+                background: radial-gradient(circle at center, #2d004d, #000);
+                filter: brightness(1.2);
+                z-index: -3;
+            }
+
+            /* Stars Parallax */
+            .star {
+                position: fixed;
+                border-radius: 50%;
+                background: white;
+                opacity: 0.8;
+                animation: twinkle 2s infinite alternate ease-in-out;
+            }
+            @keyframes twinkle {
+                from {
+                    opacity: 0.3;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+
+            /* Cherry Blossom */
+            .petal {
+                position: fixed;
+                width: 20px;
+                height: 20px;
+                background: url("https://i.imgur.com/6X7YtQV.png");
+                background-size: cover;
+                animation: fall linear infinite;
+                opacity: 0.9;
+            }
+            @keyframes fall {
+                0% {
+                    transform: translateY(-5vh) rotate(0deg);
+                }
+                100% {
+                    transform: translateY(105vh) rotate(720deg);
+                }
+            }
+
+            /* Falling neon text (diagonal down smooth) */
+            .fallText {
+                position: absolute;
+                font-size: 24px;
+                font-weight: 700;
+                white-space: nowrap;
+                pointer-events: none;
+                opacity: 0.95;
+                animation: fallDiag30 linear forwards;
+            }
+
+            /* Rơi chéo nhẹ xuống */
+            @keyframes fallDiag {
+                0% {
+                    transform: translate(0, -50px);
+                    opacity: 1;
+                }
+                100% {
+                    transform: translate(50px, 110vh);
+                    opacity: 0;
+                }
+            }
+
+            /* Rơi chéo xuống khoảng 30° */
+            @keyframes fallDiag30 {
+                0% {
+                    transform: translate(0, -60px) rotate(-2deg);
+                    opacity: 1;
+                }
+                100% {
+                    transform: translate(180px, 110vh) rotate(-2deg);
+                    opacity: 0;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div id="scene"></div>
+
+        <script>
+            const scene = document.getElementById("scene");
+
+            // 🌟 Create galaxy stars
+            for (let i = 0; i < 140; i++) {
+                let s = document.createElement("div");
+                s.className = "star";
+                let size = Math.random() * 2 + 1;
+                s.style.width = s.style.height = size + "px";
+                s.style.top = Math.random() * 100 + "vh";
+                s.style.left = Math.random() * 100 + "vw";
+                s.style.animationDuration = 2 + Math.random() * 2 + "s";
+                document.body.appendChild(s);
+            }
+
+            // 🌸 Cherry blossom petals
+            for (let i = 0; i < 25; i++) {
+                let p = document.createElement("div");
+                p.className = "petal";
+                p.style.left = Math.random() * 100 + "vw";
+                p.style.animationDuration = 5 + Math.random() * 8 + "s";
+                document.body.appendChild(p);
+            }
+
+            // 💘 Neon falling texts
+            const msgs = [
+                "Yêu em 💖",
+                "365 ngày bên nhau 🌙",
+                "Em là định mệnh ✨",
+                "Hạnh phúc là em 💞",
+                "Forever us 💍",
+            ];
+            const colors = [
+                "#ff4dff",
+                "#00eaff",
+                "#ff2b2b",
+                "#00ff9d",
+                "#ffd700",
+            ];
+            function neonDrop() {
+                let t = document.createElement("div");
+                t.className = "fallText";
+                t.textContent = msgs[Math.floor(Math.random() * msgs.length)];
+
+                // vị trí random
+                t.style.left = Math.random() * 100 + "vw";
+
+                // neon color
+                const c = colors[Math.floor(Math.random() * colors.length)];
+                t.style.color = "#fff";
+                t.style.textShadow = `0 0 4px #fff,0 0 10px ${c},0 0 26px ${c}`;
+
+                // tốc độ rơi random
+                const d = 5 + Math.random() * 6;
+                t.style.animationDuration = d + "s";
+
+                scene.appendChild(t);
+                setTimeout(() => t.remove(), d * 1000);
+            }
+
+            setInterval(neonDrop, 700);
+
+            // 📱 Gesture controls: Zoom + Pan = Space navigation
+            let scale = 1,
+                startDist = 0;
+            let posX = 0,
+                posY = 0,
+                lastX = 0,
+                lastY = 0;
+
+            function touchStart(e) {
+                if (e.touches.length === 2) {
+                    const dx = e.touches[0].clientX - e.touches[1].clientX;
+                    const dy = e.touches[0].clientY - e.touches[1].clientY;
+                    startDist = Math.hypot(dx, dy);
+                } else if (e.touches.length === 1) {
+                    lastX = e.touches[0].clientX - posX;
+                    lastY = e.touches[0].clientY - posY;
+                }
+            }
+            function touchMove(e) {
+                e.preventDefault();
+                if (e.touches.length === 2) {
+                    const dx = e.touches[0].clientX - e.touches[1].clientX;
+                    const dy = e.touches[0].clientY - e.touches[1].clientY;
+                    const dist = Math.hypot(dx, dy);
+                    scale = Math.min(
+                        2.5,
+                        Math.max(0.6, scale + (dist - startDist) / 5000)
+                    );
+                    startDist = dist;
+                } else {
+                    posX = e.touches[0].clientX - lastX;
+                    posY = e.touches[0].clientY - lastY;
+                }
+                applyTransform();
+            }
+            function applyTransform() {
+                scene.style.transform = `translate3d(${posX}px,${posY}px,0) scale(${scale})`;
+            }
+            document.addEventListener("touchstart", touchStart);
+            document.addEventListener("touchmove", touchMove);
+
+            // Mouse support
+            let isDown = false;
+            document.addEventListener("mousedown", (e) => {
+                isDown = true;
+                lastX = e.clientX - posX;
+                lastY = e.clientY - posY;
+            });
+            document.addEventListener("mouseup", () => (isDown = false));
+            document.addEventListener("mousemove", (e) => {
+                if (isDown) {
+                    posX = e.clientX - lastX;
+                    posY = e.clientY - lastY;
+                    applyTransform();
+                }
+            });
+            document.addEventListener("wheel", (e) => {
+                scale += e.deltaY > 0 ? -0.1 : 0.1;
+                scale = Math.min(2.5, Math.max(0.6, scale));
+                applyTransform();
+            });
+        </script>
+    </body>
+</html>
